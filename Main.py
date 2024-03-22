@@ -9,7 +9,12 @@ def handle_request(client_conn):
         request_data = client_conn.recv(4096)
 
         remote_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        remote_conn.connect((remote_host, remote_port))
+        try:
+            remote_conn.connect((remote_host, remote_port))
+        except socket.error as e:
+            print(f'Could not connect to {remote_host}:{remote_port} - {e}')
+            return
+
         remote_conn.sendall(request_data)
         
         response_data = remote_conn.recv(4096)
